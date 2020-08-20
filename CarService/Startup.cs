@@ -1,6 +1,6 @@
 using CarService.Application;
-using CarService.Extensions;
 using CarService.Infrastructure.Persistence;
+using CarService.WebApi.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Logging;
 
-namespace CarService
+namespace CarService.WebApi
 {
     public class Startup
     {

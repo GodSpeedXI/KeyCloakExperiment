@@ -1,11 +1,10 @@
-﻿using CarService.Application.CQRS.CarProduct.Commands;
+﻿using System.Threading.Tasks;
+using CarService.Application.CQRS.CarProduct.Commands;
 using CarService.Application.CQRS.CarProduct.Queries.GetCarProduct;
-using CarService.WebApi.Controllers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
-namespace CarService.Controllers
+namespace CarService.WebApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]
