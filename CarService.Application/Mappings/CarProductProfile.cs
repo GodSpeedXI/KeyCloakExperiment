@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CarService.Application.CQRS.CarProduct.Commands;
 using CarService.Application.CQRS.CarProduct.Queries.GetCarProduct;
 using CarService.Domain.Entities;
 
@@ -9,7 +10,7 @@ namespace CarService.Application.Mappings
         public CarProductProfile()
         {
             CreateMap<CarProduct, GetCarProductQueryModel>().ReverseMap();
-            //CreateMap<GetCarProductQueryModel, CarProduct>();
+            CreateMap<CreateCarProductCommand, CarProduct>().ReverseMap();
         }
     }
 }
