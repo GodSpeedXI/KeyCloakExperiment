@@ -1,27 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using CarService.Domain;
+﻿using CarService.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using CarService.Application.CQRS.CarProduct.Queries.GetCarProduct;
+using CarService.Application.Interfaces.Repositories;
+using CarService.WebApi.Controllers;
+using MediatR;
 
 namespace CarService.Controllers
 {
     [ApiController]
     [Route("[controller]")]
     [Authorize]
-    public class CarServiceController : ControllerBase
+    public class CarServiceController : MediatorBase
     {
-        [HttpGet]
-        public ActionResult GetAllCar()
-        {
-            var carList = new List<Car>(3);
-            carList.Add(new Car(){ CarId = 1, Brand = "Toyota", Series = "Prius", Nickname = "New Prius 2020"});
-            carList.Add(new Car() { CarId = 2, Brand = "Mercedes benz", Series = "C-Class", Nickname = "C-Class Saloon" });
-            carList.Add(new Car() { CarId = 3, Brand = "BMW", Series = "i8", Nickname = "i8 Roadster" });
+        private readonly ICarProductRepository _carProduct;
 
-            return Ok(new {cars = carList});
+        public CarServiceController(ICarProductRepository carProduct)
+        {
+            _carProduct = carProduct;
+        }
+        [HttpGet]
+        public async Task<ActionResult> GetCars([FromQuery] GetCarProductQuery carProductQuery)
+        {
+            //var carList = await _carProduct.GetPagedReponseAsync(1, 10);
+            //return Ok(new { cars = carList });
+
+            return Ok(await Mediator.Send(carProductQuery));
         }
     }
 }

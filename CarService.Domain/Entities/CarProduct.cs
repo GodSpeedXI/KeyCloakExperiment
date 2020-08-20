@@ -1,6 +1,6 @@
-﻿namespace CarService.Domain
+﻿namespace CarService.Domain.Entities
 {
-    public class Car
+    public class CarProduct
     {
         public int CarId { get; set; }
         public string Brand { get; set; }
