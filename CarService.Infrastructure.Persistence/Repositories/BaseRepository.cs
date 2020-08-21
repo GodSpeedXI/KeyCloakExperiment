@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using CarService.Application.Interfaces.Repositories;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
-using System.Linq;
+﻿using CarService.Application.Interfaces.Repositories;
 using CarService.Infrastructure.Persistence.Contexts;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace CarService.Infrastructure.Persistence.Repositories
 {
-    public abstract class BaseRepository<T> : IBaseRepositoryAsync<T> where T : class
+    public abstract class BaseRepository<TEntity> : IBaseRepositoryAsync<TEntity> where TEntity : class
     {
         private readonly CarServiceAppDbContext _dbContext;
 
@@ -18,38 +17,58 @@ namespace CarService.Infrastructure.Persistence.Repositories
         {
             _dbContext = dbContext;
         }
-        public virtual async Task<T> GetByIdAsync(int id)
+        public virtual async Task<TEntity> GetByIdAsync(int id)
         {
-            return await _dbContext.Set<T>().FindAsync(id);
+            return await _dbContext.Set<TEntity>().FindAsync(id);
         }
 
-        public virtual async Task<IReadOnlyList<T>> GetPagedReponseAsync(int pageNumber, int pageSize)
+        public virtual async Task<IEnumerable<TEntity>> GetPagedReponseAsync(int pageNumber, int pageSize = 10)
         {
             return await _dbContext
-                .Set<T>()
+                .Set<TEntity>()
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .AsNoTracking()
                 .ToListAsync();
         }
 
-        public virtual async Task<T> AddAsync(T entity)
+        public async Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate)
         {
-            await _dbContext.Set<T>().AddAsync(entity);
-            await _dbContext.SaveChangesAsync();
+            return await _dbContext.Set<TEntity>().Where(predicate).ToListAsync();
+        }
+
+        public virtual async Task<TEntity> AddAsync(TEntity entity)
+        {
+            await _dbContext.Set<TEntity>().AddAsync(entity);
             return entity;
         }
 
-        public virtual async Task UpdateAsync(T entity)
+        public async Task<IEnumerable<TEntity>> AddRangeAsync(IEnumerable<TEntity> entities)
         {
-            _dbContext.Entry(entity).State = EntityState.Modified;
+            await _dbContext.Set<TEntity>().AddRangeAsync(entities);
+            return entities;
+        }
+
+        public void Update(TEntity entity)
+        {
+            _dbContext.Set<TEntity>().Update(entity);
+        }
+
+        public void RemoveRange(IEnumerable<TEntity> entities)
+        {
+            _dbContext.Set<TEntity>().RemoveRange(entities);
+        }
+
+        public async Task SaveAsync()
+        {
             await _dbContext.SaveChangesAsync();
         }
 
-        public virtual async Task DeleteAsync(T entity)
+        public void Remove(TEntity entity)
         {
-            _dbContext.Set<T>().Remove(entity);
-            await _dbContext.SaveChangesAsync();
+            _dbContext.Set<TEntity>().Remove(entity);
         }
+
+
     }
 }

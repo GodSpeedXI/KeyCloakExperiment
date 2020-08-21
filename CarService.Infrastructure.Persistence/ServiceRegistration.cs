@@ -1,4 +1,5 @@
 ﻿using CarService.Application.Interfaces.Repositories;
+using CarService.Application.Interfaces.UnitOfWork;
 using CarService.Infrastructure.Persistence.Contexts;
 using CarService.Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +18,7 @@ namespace CarService.Infrastructure.Persistence
             });
 
             service.AddTransient<ICarProductRepository, CarProductRepository>();
+            service.AddTransient<IUnitOfWork, UnitOfWork.UnitOfWork>();
         }
     }
 }
